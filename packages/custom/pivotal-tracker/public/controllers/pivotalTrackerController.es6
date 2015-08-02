@@ -16,6 +16,8 @@ angular.module('mean.pivotal-tracker').controller('PivotalTrackerController', ['
 
     PivotalTracker.getCurrentIterationStories($scope.projectID).then( (currentStories) => { $scope.currentIterationStories = currentStories});
 
+
+    //Per prendere i task di una storia, vedo l'attibuto 'data-story-id' del bottone premuto
     $scope.getStoryTasks = (element) => {
       PivotalTracker.getStoryTasks($scope.projectID,element.target.getAttribute("data-story-id"))
           .then((tasks) => { $scope.tasks = tasks})
