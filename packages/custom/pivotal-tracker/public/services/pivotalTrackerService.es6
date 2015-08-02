@@ -57,8 +57,7 @@ angular.module('mean.pivotal-tracker').factory('PivotalTracker', ['$http','$q',
                   .error( (message) => { response.reject(message)})
               return response.promise;
           },
-
-          getCurrentIterationStories : (projectID) => {
+          getCurrentIteration : (projectID) => {
               let response = $q.defer();
               $http.get(`https://www.pivotaltracker.com/services/v5/projects/${projectID}/iterations`,
                   {
@@ -67,10 +66,13 @@ angular.module('mean.pivotal-tracker').factory('PivotalTracker', ['$http','$q',
                       }
                   })
                   .success( (iterations) => {
-                      response.resolve(addMandaysCategoryToStories(iterations[iterations.length-1].stories))})
+                      let currentIteration = iterations[iterations.length-1];
+                      currentIteration.stories = addMandaysCategoryToStories(currentIteration.stories);
+                      response.resolve(currentIteration)})
                   .error( (message) => { response.reject(message)})
               return response.promise;
           },
+
           getStoryTasks: (projectID,storyID) => {
               let response = $q.defer();
               $http.get(`https://www.pivotaltracker.com/services/v5/projects/${projectID}/stories/${storyID}/tasks`,
@@ -83,6 +85,31 @@ angular.module('mean.pivotal-tracker').factory('PivotalTracker', ['$http','$q',
                       response.resolve(tasks)})
                   .error( (message) => { response.reject(message)})
               return response.promise;
+          },
+
+           getRemainingMandays : (demoDay,persons) => {
+
+              // Orario corrente
+              let now = new Date();
+
+              // Giorni effettive dalla scadenza
+              let effectiveDaysRemaining = (Math.floor((demoDay - now) / (1000*60*60*24))) +1;
+
+              let mandaysRemaining = effectiveDaysRemaining;
+
+              let saturdayOrSunday = ([0,6].indexOf(now.getDay())) != -1;
+
+              if(effectiveDaysRemaining>3)
+                  if(saturdayOrSunday)
+                      mandaysRemaining = 3;
+                  else
+                      mandaysRemaining -= 2;
+
+              if(now.getHours() > 14 && !saturdayOrSunday)
+                  mandaysRemaining -= 0.5;
+
+              return mandaysRemaining * persons;
+
           }
 
 

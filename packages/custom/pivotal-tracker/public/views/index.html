@@ -2,19 +2,19 @@
     <h1> Provo a prendere le storie
     </h1>
 
-    <div class="container">
+    < class="container">
         <div class="row">
             <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                 <h2> Tutte le storie del progetto</h2>
 
-                <div ng-repeat="story in stories track by $index">
+                <div ng-repeat="story in allStories">
                     {{story.name}} - {{story.mandays}} - {{story.category}}
                 </div>
             </div>
             <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                 <h2> Tutte le iterazioni del progetto</h2>
 
-                <div ng-repeat="iteration in iterations track by $index">
+                <div ng-repeat="iteration in allIterations">
                     <ul>
                         <h3> Iteration {{$index +1}}</h3>
                         Start:
@@ -42,6 +42,13 @@
 
             </div>
 
-        </div>
+        </div><!-- row-->
+            <div class="row">
+                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+
+                    </div>
+                </div>
+
+
     </div>
 </div>

@@ -81,20 +81,22 @@ angular.module('mean.pivotal-tracker').factory('PivotalTracker', ['$http', '$q',
             });
             return response.promise;
         },
-
-        getCurrentIterationStories: function getCurrentIterationStories(projectID) {
+        getCurrentIteration: function getCurrentIteration(projectID) {
             var response = $q.defer();
             $http.get('https://www.pivotaltracker.com/services/v5/projects/' + projectID + '/iterations', {
                 headers: {
                     'X-TrackerToken': '222069cee93cc9a8651bb4bcccc2c5d7'
                 }
             }).success(function (iterations) {
-                response.resolve(addMandaysCategoryToStories(iterations[iterations.length - 1].stories));
+                var currentIteration = iterations[iterations.length - 1];
+                currentIteration.stories = addMandaysCategoryToStories(currentIteration.stories);
+                response.resolve(currentIteration);
             }).error(function (message) {
                 response.reject(message);
             });
             return response.promise;
         },
+
         getStoryTasks: function getStoryTasks(projectID, storyID) {
             var response = $q.defer();
             $http.get('https://www.pivotaltracker.com/services/v5/projects/' + projectID + '/stories/' + storyID + '/tasks', {
@@ -107,6 +109,25 @@ angular.module('mean.pivotal-tracker').factory('PivotalTracker', ['$http', '$q',
                 response.reject(message);
             });
             return response.promise;
+        },
+
+        getRemainingMandays: function getRemainingMandays(demoDay, persons) {
+
+            // Orario corrente
+            var now = new Date();
+
+            // Giorni effettive dalla scadenza
+            var effectiveDaysRemaining = Math.floor((demoDay - now) / (1000 * 60 * 60 * 24)) + 1;
+
+            var mandaysRemaining = effectiveDaysRemaining;
+
+            var saturdayOrSunday = [0, 6].indexOf(now.getDay()) != -1;
+
+            if (effectiveDaysRemaining > 3) if (saturdayOrSunday) mandaysRemaining = 3;else mandaysRemaining -= 2;
+
+            if (now.getHours() > 14 && !saturdayOrSunday) mandaysRemaining -= 0.5;
+
+            return mandaysRemaining * persons;
         }
 
     };
