@@ -1,6 +1,40 @@
 'use strict';
 
 angular.module('mean.pivotal-tracker').factory('PivotalTracker', ['$http', '$q', function ($http, $q) {
+
+    var addMandaysCategoryToStories = function addMandaysCategoryToStories(stories) {
+        return stories.map(function (story) {
+            var _iteratorNormalCompletion = true;
+            var _didIteratorError = false;
+            var _iteratorError = undefined;
+
+            try {
+
+                for (var _iterator = story.labels[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                    var label = _step.value;
+
+                    if (label.name.includes('m:')) story.mandays = parseInt(label.name.substring(2));
+                    if (label.name.includes('c:')) story.category = label.name.substring(2);
+                }
+            } catch (err) {
+                _didIteratorError = true;
+                _iteratorError = err;
+            } finally {
+                try {
+                    if (!_iteratorNormalCompletion && _iterator['return']) {
+                        _iterator['return']();
+                    }
+                } finally {
+                    if (_didIteratorError) {
+                        throw _iteratorError;
+                    }
+                }
+            }
+
+            return story;
+        });
+    };
+
     return {
         name: 'pivotal-tracker',
         getEpics: function getEpics(projectId) {
@@ -20,7 +54,7 @@ angular.module('mean.pivotal-tracker').factory('PivotalTracker', ['$http', '$q',
                     'X-TrackerToken': '222069cee93cc9a8651bb4bcccc2c5d7'
                 }
             }).success(function (stories) {
-                response.resolve(stories);
+                response.resolve(addMandaysCategoryToStories(stories));
             }).error(function (message) {
                 response.reject(message);
             });
@@ -55,7 +89,7 @@ angular.module('mean.pivotal-tracker').factory('PivotalTracker', ['$http', '$q',
                     'X-TrackerToken': '222069cee93cc9a8651bb4bcccc2c5d7'
                 }
             }).success(function (iterations) {
-                response.resolve(iterations[iterations.length - 1].stories);
+                response.resolve(addMandaysCategoryToStories(iterations[iterations.length - 1].stories));
             }).error(function (message) {
                 response.reject(message);
             });

@@ -2,6 +2,21 @@
 
 angular.module('mean.pivotal-tracker').factory('PivotalTracker', ['$http','$q',
   function($http,$q) {
+
+      let addMandaysCategoryToStories = (stories) =>{
+        return stories.map( (story) => {
+
+            for( let label of story.labels) {
+                if (label.name.includes('m:'))
+                    story.mandays = parseInt(label.name.substring(2));
+                if (label.name.includes('c:'))
+                    story.category = label.name.substring(2);
+            }
+            return story;
+        })
+      }
+
+
       return {
           name: 'pivotal-tracker',
           getEpics: (projectId) => {
@@ -20,7 +35,7 @@ angular.module('mean.pivotal-tracker').factory('PivotalTracker', ['$http','$q',
                           'X-TrackerToken': '222069cee93cc9a8651bb4bcccc2c5d7'
                       }
                   })
-                  .success( (stories) => { response.resolve(stories)})
+                  .success( (stories) => { response.resolve(addMandaysCategoryToStories(stories))})
                   .error( (message) => { response.reject(message)})
               return response.promise;
           },
@@ -52,7 +67,7 @@ angular.module('mean.pivotal-tracker').factory('PivotalTracker', ['$http','$q',
                       }
                   })
                   .success( (iterations) => {
-                      response.resolve(iterations[iterations.length-1].stories)})
+                      response.resolve(addMandaysCategoryToStories(iterations[iterations.length-1].stories))})
                   .error( (message) => { response.reject(message)})
               return response.promise;
           }
