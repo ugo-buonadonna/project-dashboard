@@ -94,6 +94,19 @@ angular.module('mean.pivotal-tracker').factory('PivotalTracker', ['$http', '$q',
                 response.reject(message);
             });
             return response.promise;
+        },
+        getStoryTasks: function getStoryTasks(projectID, storyID) {
+            var response = $q.defer();
+            $http.get('https://www.pivotaltracker.com/services/v5/projects/' + projectID + '/stories/' + storyID + '/tasks', {
+                headers: {
+                    'X-TrackerToken': '222069cee93cc9a8651bb4bcccc2c5d7'
+                }
+            }).success(function (tasks) {
+                response.resolve(tasks);
+            }).error(function (message) {
+                response.reject(message);
+            });
+            return response.promise;
         }
 
     };

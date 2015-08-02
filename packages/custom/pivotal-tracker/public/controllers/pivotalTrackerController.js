@@ -12,12 +12,20 @@ angular.module('mean.pivotal-tracker').controller('PivotalTrackerController', ['
   PivotalTracker.getAllStories($scope.projectID).then(function (stories) {
     $scope.stories = stories;
   });
+
   PivotalTracker.getAllIterations($scope.projectID).then(function (iterations) {
     $scope.iterations = iterations;
   });
+
   PivotalTracker.getCurrentIterationStories($scope.projectID).then(function (currentStories) {
     $scope.currentIterationStories = currentStories;
   });
+
+  $scope.getStoryTasks = function (element) {
+    PivotalTracker.getStoryTasks($scope.projectID, element.target.getAttribute('data-story-id')).then(function (tasks) {
+      $scope.tasks = tasks;
+    });
+  };
 }]);
 
 //# sourceMappingURL=pivotalTrackerController.js.map

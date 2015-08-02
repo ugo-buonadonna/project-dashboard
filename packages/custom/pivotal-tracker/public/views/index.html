@@ -6,28 +6,42 @@
         <div class="row">
             <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                 <h2> Tutte le storie del progetto</h2>
+
                 <div ng-repeat="story in stories track by $index">
                     {{story.name}} - {{story.mandays}} - {{story.category}}
                 </div>
             </div>
             <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                 <h2> Tutte le iterazioni del progetto</h2>
+
                 <div ng-repeat="iteration in iterations track by $index">
                     <ul>
                         <h3> Iteration {{$index +1}}</h3>
-                        Start: <li>{{iteration.start}}</li>
-                        End:  <li>{{iteration.finish}}</li>
+                        Start:
+                        <li>{{iteration.start}}</li>
+                        End:
+                        <li>{{iteration.finish}}</li>
                     </ul>
                 </div>
             </div>
             <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                 <h2> Tutte le storie dello sprint corrente</h2>
+
                 <h3> in ordine di importanza</h3>
-            <div ng-repeat="story in currentIterationStories">
-                {{story.name}} - {{story.mandays}} - {{story.category}}
+
+                <div ng-repeat="story in currentIterationStories">
+                    <section>
+                        <button ng-click="getStoryTasks($event)" data-story-id="{{story.id}}">
+                            {{story.name}} - {{story.mandays}} - {{story.category}}
+                        </button>
+                        <div ng-repeat="task in tasks track by $index">
+                            {{task.description}}
+                        </div>
+                    </section>
+                </div>
+
             </div>
 
         </div>
-
     </div>
 </div>

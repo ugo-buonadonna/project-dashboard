@@ -70,7 +70,23 @@ angular.module('mean.pivotal-tracker').factory('PivotalTracker', ['$http','$q',
                       response.resolve(addMandaysCategoryToStories(iterations[iterations.length-1].stories))})
                   .error( (message) => { response.reject(message)})
               return response.promise;
+          },
+          getStoryTasks: (projectID,storyID) => {
+              let response = $q.defer();
+              $http.get(`https://www.pivotaltracker.com/services/v5/projects/${projectID}/stories/${storyID}/tasks`,
+                  {
+                      headers: {
+                          'X-TrackerToken': '222069cee93cc9a8651bb4bcccc2c5d7'
+                      }
+                  })
+                  .success( (tasks) => {
+                      response.resolve(tasks)})
+                  .error( (message) => { response.reject(message)})
+              return response.promise;
           }
+
+
+
 
 
       }

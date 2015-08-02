@@ -11,9 +11,14 @@ angular.module('mean.pivotal-tracker').controller('PivotalTrackerController', ['
     };
 
     PivotalTracker.getAllStories($scope.projectID).then( (stories) => { $scope.stories = stories});
+
     PivotalTracker.getAllIterations($scope.projectID).then( (iterations) => { $scope.iterations = iterations});
+
     PivotalTracker.getCurrentIterationStories($scope.projectID).then( (currentStories) => { $scope.currentIterationStories = currentStories});
 
+    $scope.getStoryTasks = (element) => {
+      PivotalTracker.getStoryTasks($scope.projectID,element.target.getAttribute("data-story-id"))
+          .then((tasks) => { $scope.tasks = tasks})
+    }
 
-  }
-]);
+  }]);
