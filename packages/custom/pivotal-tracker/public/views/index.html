@@ -2,7 +2,7 @@
     <h1> Provo a prendere le storie
     </h1>
 
-    < class="container">
+    <div class="container">
         <div class="row">
             <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
                 <h2> Tutte le storie del progetto</h2>
@@ -42,13 +42,37 @@
 
             </div>
 
-        </div><!-- row-->
-            <div class="row">
-                <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+        </div>
+        <!-- row-->
+        <div class="row">
+            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                <h2>Storie assegnate a: </h2>
+                    <ul>Ugo:
+                        <li ng-repeat="story in storiesUgo">
+                        {{story.name}}
+                    </li>
+                    </ul>
+                <ul>Davide:
+                    <li ng-repeat="story in storiesDavide">
+                        {{story.name}}
+                    </li>
+                </ul>
+                <ul>Andrea:
+                    <li ng-repeat="story in storiesAndrea">
+                        {{story.name}}
+                    </li>
+                </ul>
 
-                    </div>
+
+
+            </div>
+            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                <h2>Quandi mandays rimangono</h2>
+                <div>
+                    {{getRemainingMandays(nextDemoDay,teamMembers)}}
                 </div>
+            </div>
 
-
+        </div>
     </div>
 </div>

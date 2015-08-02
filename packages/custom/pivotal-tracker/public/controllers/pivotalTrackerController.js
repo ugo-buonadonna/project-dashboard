@@ -6,6 +6,9 @@ angular.module('mean.pivotal-tracker').controller('PivotalTrackerController', ['
   $http.defaults.useXDomain = true;
   $scope.global = Global;
   $scope.projectID = 1398148; //Passparyou project id hardcoded
+  $scope.andreaID = 1748762;
+  $scope.davideID = 1748768;
+  $scope.ugoID = 1748750;
   $scope.nextDemoDay = new Date('08/13/2015');
   $scope.teamMembers = 3; //per ora
 
@@ -29,6 +32,16 @@ angular.module('mean.pivotal-tracker').controller('PivotalTrackerController', ['
   PivotalTracker.getCurrentIteration($scope.projectID).then(function (currentIteration) {
     $scope.currentIterationStories = currentIteration.stories;
     $scope.currentIteration = currentIteration;
+  });
+
+  PivotalTracker.getCurrentIterationUserAssignedStories($scope.projectID, $scope.ugoID).then(function (stories) {
+    $scope.storiesUgo = stories;
+  });
+  PivotalTracker.getCurrentIterationUserAssignedStories($scope.projectID, $scope.davideID).then(function (stories) {
+    $scope.storiesDavide = stories;
+  });
+  PivotalTracker.getCurrentIterationUserAssignedStories($scope.projectID, $scope.andreaID).then(function (stories) {
+    $scope.storiesAndrea = stories;
   });
 
   //Per prendere i task di una storia, vedo l'attibuto 'data-story-id' del bottone premuto

@@ -15,6 +15,7 @@ angular.module('mean.pivotal-tracker').factory('PivotalTracker', ['$http', '$q',
 
                     if (label.name.includes('m:')) story.mandays = parseInt(label.name.substring(2));
                     if (label.name.includes('c:')) story.category = label.name.substring(2);
+                    if (label.name.includes('i:')) story.nostro_id = label.name.substring(2);
                 }
             } catch (err) {
                 _didIteratorError = true;
@@ -33,6 +34,22 @@ angular.module('mean.pivotal-tracker').factory('PivotalTracker', ['$http', '$q',
 
             return story;
         });
+    };
+
+    var getCurrentIteration = function getCurrentIteration(projectID) {
+        var response = $q.defer();
+        $http.get('https://www.pivotaltracker.com/services/v5/projects/' + projectID + '/iterations', {
+            headers: {
+                'X-TrackerToken': '222069cee93cc9a8651bb4bcccc2c5d7'
+            }
+        }).success(function (iterations) {
+            var currentIteration = iterations[iterations.length - 1];
+            currentIteration.stories = addMandaysCategoryToStories(currentIteration.stories);
+            response.resolve(currentIteration);
+        }).error(function (message) {
+            response.reject(message);
+        });
+        return response.promise;
     };
 
     return {
@@ -81,21 +98,7 @@ angular.module('mean.pivotal-tracker').factory('PivotalTracker', ['$http', '$q',
             });
             return response.promise;
         },
-        getCurrentIteration: function getCurrentIteration(projectID) {
-            var response = $q.defer();
-            $http.get('https://www.pivotaltracker.com/services/v5/projects/' + projectID + '/iterations', {
-                headers: {
-                    'X-TrackerToken': '222069cee93cc9a8651bb4bcccc2c5d7'
-                }
-            }).success(function (iterations) {
-                var currentIteration = iterations[iterations.length - 1];
-                currentIteration.stories = addMandaysCategoryToStories(currentIteration.stories);
-                response.resolve(currentIteration);
-            }).error(function (message) {
-                response.reject(message);
-            });
-            return response.promise;
-        },
+        getCurrentIteration: getCurrentIteration,
 
         getStoryTasks: function getStoryTasks(projectID, storyID) {
             var response = $q.defer();
@@ -107,6 +110,16 @@ angular.module('mean.pivotal-tracker').factory('PivotalTracker', ['$http', '$q',
                 response.resolve(tasks);
             }).error(function (message) {
                 response.reject(message);
+            });
+            return response.promise;
+        },
+
+        getCurrentIterationUserAssignedStories: function getCurrentIterationUserAssignedStories(projectID, userID) {
+            var response = $q.defer();
+            getCurrentIteration(projectID).then(function (iteration) {
+                response.resolve(iteration.stories.filter(function (x) {
+                    return x.owner_ids.indexOf(userID) != -1;
+                }));
             });
             return response.promise;
         },

@@ -8,6 +8,9 @@ angular.module('mean.pivotal-tracker').controller('PivotalTrackerController', ['
     $http.defaults.useXDomain = true;
     $scope.global = Global;
     $scope.projectID = 1398148; //Passparyou project id hardcoded
+    $scope.andreaID = 1748762;
+    $scope.davideID = 1748768;
+    $scope.ugoID = 1748750;
     $scope.nextDemoDay = new Date('08/13/2015');
     $scope.teamMembers = 3; //per ora
 
@@ -26,9 +29,19 @@ angular.module('mean.pivotal-tracker').controller('PivotalTrackerController', ['
     // and calculates remaining mandays
     PivotalTracker.getCurrentIteration($scope.projectID).then( (currentIteration) => {
       $scope.currentIterationStories = currentIteration.stories;
-      $scope.currentIteration = currentIteration});
+      $scope.currentIteration = currentIteration
+    });
 
 
+    PivotalTracker.getCurrentIterationUserAssignedStories($scope.projectID,$scope.ugoID).then( (stories) => {
+      $scope.storiesUgo = stories;
+    });
+    PivotalTracker.getCurrentIterationUserAssignedStories($scope.projectID,$scope.davideID).then( (stories) => {
+      $scope.storiesDavide = stories;
+    });
+    PivotalTracker.getCurrentIterationUserAssignedStories($scope.projectID,$scope.andreaID).then( (stories) => {
+      $scope.storiesAndrea = stories;
+    });
 
 
     //Per prendere i task di una storia, vedo l'attibuto 'data-story-id' del bottone premuto
@@ -39,7 +52,5 @@ angular.module('mean.pivotal-tracker').controller('PivotalTrackerController', ['
 
 
     $scope.getRemainingMandays = (demoDay,teamMembers) => PivotalTracker.getRemainingMandays(demoDay,teamMembers)
-
-
 
   }]);

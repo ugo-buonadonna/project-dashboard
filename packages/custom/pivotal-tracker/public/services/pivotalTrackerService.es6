@@ -11,10 +11,30 @@ angular.module('mean.pivotal-tracker').factory('PivotalTracker', ['$http','$q',
                     story.mandays = parseInt(label.name.substring(2));
                 if (label.name.includes('c:'))
                     story.category = label.name.substring(2);
+                if (label.name.includes('i:'))
+                    story.nostro_id = label.name.substring(2);
             }
             return story;
         })
       }
+
+      let getCurrentIteration = (projectID) => {
+          let response = $q.defer();
+          $http.get(`https://www.pivotaltracker.com/services/v5/projects/${projectID}/iterations`,
+              {
+                  headers: {
+                      'X-TrackerToken': '222069cee93cc9a8651bb4bcccc2c5d7'
+                  }
+              })
+              .success( (iterations) => {
+                  let currentIteration = iterations[iterations.length-1];
+                  currentIteration.stories = addMandaysCategoryToStories(currentIteration.stories);
+                  response.resolve(currentIteration)})
+              .error( (message) => { response.reject(message)})
+          return response.promise;
+      }
+
+
 
 
       return {
@@ -57,21 +77,8 @@ angular.module('mean.pivotal-tracker').factory('PivotalTracker', ['$http','$q',
                   .error( (message) => { response.reject(message)})
               return response.promise;
           },
-          getCurrentIteration : (projectID) => {
-              let response = $q.defer();
-              $http.get(`https://www.pivotaltracker.com/services/v5/projects/${projectID}/iterations`,
-                  {
-                      headers: {
-                          'X-TrackerToken': '222069cee93cc9a8651bb4bcccc2c5d7'
-                      }
-                  })
-                  .success( (iterations) => {
-                      let currentIteration = iterations[iterations.length-1];
-                      currentIteration.stories = addMandaysCategoryToStories(currentIteration.stories);
-                      response.resolve(currentIteration)})
-                  .error( (message) => { response.reject(message)})
-              return response.promise;
-          },
+          getCurrentIteration : getCurrentIteration
+          ,
 
           getStoryTasks: (projectID,storyID) => {
               let response = $q.defer();
@@ -84,6 +91,14 @@ angular.module('mean.pivotal-tracker').factory('PivotalTracker', ['$http','$q',
                   .success( (tasks) => {
                       response.resolve(tasks)})
                   .error( (message) => { response.reject(message)})
+              return response.promise;
+          },
+
+          getCurrentIterationUserAssignedStories: (projectID,userID) => {
+              let response = $q.defer();
+              getCurrentIteration(projectID).then( (iteration) => {
+                  response.resolve(iteration.stories.filter( x => (x.owner_ids.indexOf(userID) != -1)))
+              })
               return response.promise;
           },
 
