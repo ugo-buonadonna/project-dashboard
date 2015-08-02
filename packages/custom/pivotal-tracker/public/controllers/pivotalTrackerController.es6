@@ -10,8 +10,10 @@ angular.module('mean.pivotal-tracker').controller('PivotalTrackerController', ['
       name: 'pivotal-tracker'
     };
 
-    PivotalTracker.getStories($scope.projectID).then( (stories) => {
-        alert(stories); $scope.stories = stories});
+    PivotalTracker.getAllStories($scope.projectID).then( (stories) => { $scope.stories = stories});
+    PivotalTracker.getAllIterations($scope.projectID).then( (iterations) => { $scope.iterations = iterations});
+    PivotalTracker.getCurrentIterationStories($scope.projectID).then( (currentStories) => { $scope.currentIterationStories = currentStories});
+
 
   }
 ]);

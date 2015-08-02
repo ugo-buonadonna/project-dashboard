@@ -9,8 +9,14 @@ angular.module('mean.pivotal-tracker').controller('PivotalTrackerController', ['
     name: 'pivotal-tracker'
   };
 
-  PivotalTracker.getStories($scope.projectID).then(function (stories) {
-    alert(stories);$scope.stories = stories;
+  PivotalTracker.getAllStories($scope.projectID).then(function (stories) {
+    $scope.stories = stories;
+  });
+  PivotalTracker.getAllIterations($scope.projectID).then(function (iterations) {
+    $scope.iterations = iterations;
+  });
+  PivotalTracker.getCurrentIterationStories($scope.projectID).then(function (currentStories) {
+    $scope.currentIterationStories = currentStories;
   });
 }]);
 

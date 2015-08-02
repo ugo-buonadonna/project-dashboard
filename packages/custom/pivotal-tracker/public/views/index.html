@@ -1,8 +1,32 @@
 <div class="" data-ng-controller="PivotalTrackerController">
     <h1> Provo a prendere le storie
     </h1>
-  <div ng-repeat="story in stories track by $index">
-      {{story.name}}
-  </div>
-</div>
 
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                <h2> Tutte le storie del progetto</h2>
+                <div ng-repeat="story in stories track by $index">
+                    {{story.name}}
+                </div>
+            </div>
+            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                <h2> Tutte le iterazioni del progetto</h2>
+                <div ng-repeat="iteration in iterations track by $index">
+                    <ul>
+                        <h3> Iteration {{$index +1}}</h3>
+                        Start: <li>{{iteration.start}}</li>
+                        End:  <li>{{iteration.finish}}</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-xs-4 col-sm-4 col-md-4 col-lg-4">
+                <h2> Tutte le storie dello sprint corrente</h2>
+            <div ng-repeat="story in currentIterationStories">
+                {{story.name}}
+            </div>
+
+        </div>
+
+    </div>
+</div>
